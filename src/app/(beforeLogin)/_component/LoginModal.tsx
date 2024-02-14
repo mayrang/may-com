@@ -1,16 +1,21 @@
 "use client";
 import React, { useState } from "react";
-import styles from "./page.module.css";
-export default function ModalLoginPage() {
+import styles from "./LoginModal.module.css";
+import { useRouter } from "next/navigation";
+export default function LoginModal() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const router = useRouter();
+  const handleClose = () => {
+    router.back();
+  };
 
   return (
     <div className={styles.modalBackground}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
-          <button className={styles.closeButton}>
+          <button onClick={handleClose} className={styles.closeButton}>
             <svg
               width={24}
               viewBox="0 0 24 24"
