@@ -1,0 +1,37 @@
+.logoutButton {
+  width: 66px;
+  height: 66px;
+  padding: 12px;
+  display: flex;
+  margin: 12px 0;
+  cursor: pointer;
+  border: none;
+  align-items: center;
+  background-color: rgb(var(--background-end-rgb));
+  text-align: left;
+}
+
+@media (min-width: 1300px) {
+  .logoutButton {
+    width: 258px;
+  }
+}
+
+.logoutUserImage {
+  display: flex;
+  align-items: center;
+}
+
+.logoutUserImage img {
+  width: 40px;
+  border-radius: 50%;
+}
+
+.logoutUserName {
+  margin: 0 12px;
+  display: inline-block;
+}
+
+.logoutUserName div:first-child {
+  font-weight: 700;
+}
