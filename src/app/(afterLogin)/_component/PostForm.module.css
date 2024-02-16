@@ -1,0 +1,88 @@
+.postForm {
+  margin-top: 101px;
+  display: flex;
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid;
+  border-color: #eff3f4;
+}
+
+.postUserSection {
+  margin-right: 12px;
+  width: 40px;
+}
+
+.postUserImage,
+.postUserImage img {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.postInputSection {
+  flex: 1 1;
+}
+
+.postForm textarea {
+  width: 100%;
+  border: none;
+  padding: 12px 0;
+  font-size: 20px;
+  line-height: 24px;
+  outline: none;
+  font-family: Malgun Gothic;
+}
+
+.postButtonSection {
+  width: 100%;
+}
+
+.footerButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.footerButtonLeft {
+  flex: 1 1;
+}
+
+.uploadButton {
+  width: 34px;
+  height: 34px;
+  border: none;
+  cursor: pointer;
+  border-radius: 17px;
+  transition-duration: 0.2s;
+  transition-property: background-color;
+  background-color: rgba(29, 155, 240, 0.01);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadButton:hover {
+  background-color: rgba(29, 155, 240, 0.1);
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
+}
+
+.actionButton:hover {
+  background-color: #1a8cd8;
+}
+
+.actionButton {
+  width: 94px;
+  height: 36px;
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 18px;
+  background-color: #1d9bf0;
+}
+
+.uploadButton svg {
+  fill: #1d9bf0;
+}
