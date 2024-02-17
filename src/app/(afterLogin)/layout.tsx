@@ -7,7 +7,7 @@ import NavList from "./_component/NavList";
 import LogoutButton from "./_component/LogoutButton";
 import TrendSection from "./_component/TrendSection";
 import FollowRecommend from "./_component/FollowRecommend";
-export default function AfterLoginLayout({ children }: { children: React.ReactNode }) {
+export default function AfterLoginLayout({ children, modal }: { children: React.ReactNode; modal: React.ReactNode }) {
   return (
     <div className={styles.container}>
       <header className={styles.leftSectionWrapper}>
@@ -65,6 +65,7 @@ export default function AfterLoginLayout({ children }: { children: React.ReactNo
           </section>
         </div>
       </div>
+      {modal}
     </div>
   );
 }
