@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
 import cls from "classnames";
+import PostArticle from "./PostArticle";
+
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
@@ -14,28 +16,30 @@ export default function Post() {
   const reposted = true;
   const liked = true;
   const post = {
+    postId: 1,
     content: "안뇽갑!",
-    user: {
+    User: {
       id: "pgss0626",
       nickname: "메이랑",
       image: "/5Udwvqim.jpg",
     },
     createdAt: new Date(),
-    image: "/skiyaki.jpg",
+    Images: ["/skiyaki.jpg"],
   };
+
   return (
-    <article className={styles.post}>
+    <PostArticle post={post}>
       <div className={styles.postWrapper}>
         <div className={styles.postUserSection}>
-          <Link href={`/${post.user.id}`} className={styles.postUserImage}>
-            <Image src={post.user.image} alt={post.user.nickname} width={40} height={40} />
+          <Link href={`/${post.User.id}`} className={styles.postUserImage}>
+            <Image src={post.User.image} alt={post.User.nickname} width={40} height={40} />
             <div className={styles.postShade}></div>
           </Link>
         </div>
         <div className={styles.postBody}>
           <div className={styles.postMeta}>
-            <Link href={`/${post.user.id}`}>
-              <span className={styles.postUserName}>{post.user.nickname}</span>&nbsp;<span>@{post.user.id}</span>
+            <Link href={`/${post.User.id}`}>
+              <span className={styles.postUserName}>{post.User.nickname}</span>&nbsp;<span>@{post.User.id}</span>
               &nbsp;·&nbsp;
             </Link>
             <span className={styles.postDate}>{dayjs(post.createdAt).fromNow(true)}</span>
@@ -44,11 +48,11 @@ export default function Post() {
           <div>
             <Link
               className={`${styles.postImageSection} ${styles.oneImage}`}
-              href={`/${post.user.id}`}
-              style={{ backgroundImage: `url("${post.image}")`, backgroundSize: "contain" }}
+              href={`/${post.User.id}`}
+              style={{ backgroundImage: `url("${post.Images.at(-1)}")`, backgroundSize: "contain" }}
             >
               <Image
-                src={`${post.image}`}
+                src={`${post.Images.at(-1)}`}
                 width={520}
                 height={580}
                 style={{ height: "auto", objectFit: "cover", width: "100%" }}
@@ -90,6 +94,6 @@ export default function Post() {
           </div>
         </div>
       </div>
-    </article>
+    </PostArticle>
   );
 }
