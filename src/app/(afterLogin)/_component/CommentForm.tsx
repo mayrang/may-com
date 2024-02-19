@@ -1,6 +1,6 @@
 "use client";
 import React, { ChangeEventHandler, FormEventHandler, useState } from "react";
-import styles from "./PostForm.module.css";
+import styles from "./CommentForm.module.css";
 import Image from "next/image";
 
 export default function CommentForm() {
