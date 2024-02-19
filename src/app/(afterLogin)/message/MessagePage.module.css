@@ -1,0 +1,58 @@
+.main {
+  height: 100dvh;
+}
+
+.header {
+  height: 53px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.header h3 {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.room {
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+  border-color: #eff3f4;
+  cursor: pointer;
+}
+
+.room:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.roomUserImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.roomUserImage img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.roomChatInfo {
+  display: flex;
+  flex-direction: column;
+  color: #536471;
+  font-size: 15px;
+}
+
+.roomUserInfo {
+  display: flex;
+}
+
+.roomChatInfo b {
+  color: #000;
+}
