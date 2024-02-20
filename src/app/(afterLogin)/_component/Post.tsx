@@ -9,6 +9,7 @@ import "dayjs/locale/ko";
 import PostArticle from "./PostArticle";
 import { faker } from "@faker-js/faker";
 import ActionButtons from "./ActionButtons";
+import PostImages from "./PostImages";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
@@ -26,8 +27,12 @@ export default function Post({ showImage = true }: Props) {
       image: faker.image.avatar(),
     },
     createdAt: new Date(),
-    Images: [faker.image.url()],
-    imageId: 1,
+    Images: [
+      { imageId: 1, imageUrl: faker.image.url() },
+      { imageId: 2, imageUrl: faker.image.url() },
+      { imageId: 3, imageUrl: faker.image.url() },
+      { imageId: 4, imageUrl: faker.image.url() },
+    ],
   };
 
   return (
@@ -48,21 +53,7 @@ export default function Post({ showImage = true }: Props) {
             <span className={styles.postDate}>{dayjs(post.createdAt).fromNow(true)}</span>
           </div>
           <div>{post.content}</div>
-          {showImage && (
-            <div>
-              <Link
-                className={`${styles.postImageSection} ${styles.oneImage}`}
-                href={`/${post.User.id}/status/${post.postId}/photo/${post.imageId}`}
-                style={{ backgroundImage: `url("${post.Images.at(-1)}")`, backgroundSize: "contain" }}
-              >
-                <img
-                  src={`${post.Images.at(-1)}`}
-                  style={{ height: "auto", objectFit: "cover", width: "100%" }}
-                  alt="content image"
-                />
-              </Link>
-            </div>
-          )}
+          {showImage && <PostImages post={post} />}
           <ActionButtons white={false} />
         </div>
       </div>
