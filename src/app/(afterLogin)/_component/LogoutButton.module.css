@@ -11,9 +11,18 @@
   text-align: left;
 }
 
-@media (min-width: 1300px) {
+.logoutUserName {
+  display: none;
+}
+
+@media all and (min-width: 1300px) {
   .logoutButton {
     width: 258px;
+  }
+
+  .logoutUserName {
+    margin: 0 12px;
+    display: inline-block;
   }
 }
 
@@ -25,11 +34,6 @@
 .logoutUserImage img {
   width: 40px;
   border-radius: 50%;
-}
-
-.logoutUserName {
-  margin: 0 12px;
-  display: inline-block;
 }
 
 .logoutUserName div:first-child {
