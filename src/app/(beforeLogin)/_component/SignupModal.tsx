@@ -1,40 +1,35 @@
+"use client";
 import React from "react";
 import styles from "./SignupModal.module.css";
 import CloseButton from "./CloseButton";
-import { redirect } from "next/navigation";
-export default function SignupModal() {
-  const sumbitForm = async (formData: FormData) => {
-    "use server";
-    let shouldRedirect = false;
-    if (!formData.get("id")) {
-      return { message: "no_id" };
-    }
-    if (!formData.get("name")) {
-      return { message: "no_name" };
-    }
-    if (!formData.get("password")) {
-      return { message: "no_password" };
-    }
-    if (!formData.get("image")) {
-      return { message: "no_image" };
-    }
-    console.log(formData);
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
-        method: "post",
-        body: formData,
-        credentials: "include", // 이 속성이 있어야 쿠키 전달 가능
-      });
-      shouldRedirect = true;
-    } catch (err) {
-      console.error(err);
-      shouldRedirect = false;
-    }
+import { signupAction } from "../_lib/signup";
+import { useFormState, useFormStatus } from "react-dom";
 
-    if (shouldRedirect) {
-      redirect("/home");
-    }
-  };
+function koreanMessage(message: string | undefined) {
+  if (message === "no_id") {
+    return "아이디는 필수 입력입니다.";
+  }
+  if (message === "no_name") {
+    return "닉네임는 필수 입력입니다.";
+  }
+  if (message === "no_password") {
+    return "비밀번호는 필수 입력입니다.";
+  }
+  if (message === "no_image") {
+    return "프로필은 필수 입력입니다.";
+  }
+  if (message === "user_exist") {
+    return "이미 존재하는 유저입니다.";
+  }
+  if (message === "response_error") {
+    return "회원가입에 실패하였습니다.";
+  }
+  return "";
+}
+
+export default function SignupModal() {
+  const [state, formAction] = useFormState(signupAction, { message: "" });
+  const { pending } = useFormStatus();
   return (
     <div className={styles.modalBackground}>
       <div className={styles.modal}>
@@ -42,7 +37,7 @@ export default function SignupModal() {
           <CloseButton />
           <div>계정을 생성하세요.</div>
         </div>
-        <form action={sumbitForm}>
+        <form action={formAction}>
           <div className={styles.modalBody}>
             <div className={styles.inputDiv}>
               <label htmlFor="id" className={styles.inputLabel}>
@@ -70,10 +65,10 @@ export default function SignupModal() {
             </div>
           </div>
           <div className={styles.modalFooter}>
-            <button type="submit" className={styles.actionButton}>
+            <button type="submit" className={styles.actionButton} disabled={pending}>
               가입하기
             </button>
-            <div className={styles.error}></div>
+            <div className={styles.error}>{koreanMessage(state?.message)}</div>
           </div>
         </form>
       </div>
