@@ -3,6 +3,7 @@ import styles from "./Post.module.css";
 import Link from "next/link";
 import cls from "classnames";
 export default function PostImages({ post }: any) {
+  console.log(`/${post.User.id}/status/${post.postId}/photo/${post.Images[0].imageId}`);
   if (!post?.Images) return null;
   if (post.Images.length === 0) return null;
   if (post.Images.length === 1) {
@@ -26,11 +27,11 @@ export default function PostImages({ post }: any) {
     return (
       <div className={cls(styles.postImageSection, styles.twoImage)}>
         <Link
-          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0].imageUrl}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0].imageId}`}
           style={{ backgroundImage: `url("${post.Images[0].imageUrl}")`, backgroundSize: "cover" }}
         ></Link>
         <Link
-          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1].imageUrl}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1].imageId}`}
           style={{ backgroundImage: `url("${post.Images[1].imageUrl}")`, backgroundSize: "cover" }}
         ></Link>
       </div>
@@ -40,16 +41,16 @@ export default function PostImages({ post }: any) {
     return (
       <div className={cls(styles.postImageSection, styles.threeImage)}>
         <Link
-          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0].imageUrl}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0].imageId}`}
           style={{ backgroundImage: `url("${post.Images[0].imageUrl}")`, backgroundSize: "cover" }}
         ></Link>
         <div>
           <Link
-            href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1].imageUrl}`}
+            href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1].imageId}`}
             style={{ backgroundImage: `url("${post.Images[1].imageUrl}")`, backgroundSize: "cover" }}
           ></Link>
           <Link
-            href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[2].imageUrl}`}
+            href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[2].imageId}`}
             style={{ backgroundImage: `url("${post.Images[2].imageUrl}")`, backgroundSize: "cover" }}
           ></Link>
         </div>
@@ -60,19 +61,19 @@ export default function PostImages({ post }: any) {
     return (
       <div className={cls(styles.postImageSection, styles.fourImage)}>
         <Link
-          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0].imageUrl}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0].imageId}`}
           style={{ backgroundImage: `url("${post.Images[0].imageUrl}")`, backgroundSize: "cover" }}
         ></Link>
         <Link
-          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1].imageUrl}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1].imageId}`}
           style={{ backgroundImage: `url("${post.Images[1].imageUrl}")`, backgroundSize: "cover" }}
         ></Link>
         <Link
-          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[2].imageUrl}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[2].imageId}`}
           style={{ backgroundImage: `url("${post.Images[2].imageUrl}")`, backgroundSize: "cover" }}
         ></Link>
         <Link
-          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[3].imageUrl}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[3].imageId}`}
           style={{ backgroundImage: `url("${post.Images[3].imageUrl}")`, backgroundSize: "cover" }}
         ></Link>
       </div>

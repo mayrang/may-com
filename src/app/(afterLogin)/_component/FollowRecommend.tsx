@@ -3,6 +3,8 @@ import React from "react";
 import styles from "./FollowRecommend.module.css";
 import Link from "next/link";
 import Image from "next/image";
+
+import FollowButton from "./FollowButton";
 export default function FollowRecommend() {
   return (
     <Link href="/pgss0626" className={styles.container}>
@@ -15,9 +17,7 @@ export default function FollowRecommend() {
         <div className={styles.title}>메이랑</div>
         <div className={styles.count}>@ {"pgss0626"}</div>
       </div>
-      <div className={styles.followButtonSection}>
-        <button>팔로우</button>
-      </div>
+      <FollowButton />
     </Link>
   );
 }
