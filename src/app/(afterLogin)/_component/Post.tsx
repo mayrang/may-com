@@ -10,31 +10,16 @@ import PostArticle from "./PostArticle";
 import { faker } from "@faker-js/faker";
 import ActionButtons from "./ActionButtons";
 import PostImages from "./PostImages";
+import { Post } from "@/model/Post";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
 type Props = {
   showImage?: boolean;
+  post: Post;
 };
 
-export default function Post({ showImage = true }: Props) {
-  const post = {
-    postId: 1,
-    content: "안뇽갑!",
-    User: {
-      id: "pgss0626",
-      nickname: "메이랑",
-      image: faker.image.avatar(),
-    },
-    createdAt: new Date(),
-    Images: [
-      { imageId: 1, imageUrl: faker.image.url() },
-      { imageId: 2, imageUrl: faker.image.url() },
-      { imageId: 3, imageUrl: faker.image.url() },
-      { imageId: 4, imageUrl: faker.image.url() },
-    ],
-  };
-
+export default function Post({ showImage = true, post }: Props) {
   return (
     <PostArticle post={post}>
       <div className={styles.postWrapper}>

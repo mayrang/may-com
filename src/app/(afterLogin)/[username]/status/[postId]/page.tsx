@@ -19,18 +19,9 @@ export default function SinglePostPage({ params }: Props) {
         <BackButton />
         <h3 className={styles.headerTitle}>게시하기</h3>
       </div>
-      <Post />
+
       <CommentForm />
-      <div>
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-      </div>
+      <div></div>
     </div>
   );
 }
