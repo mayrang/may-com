@@ -6,6 +6,7 @@ import PostForm from "../_component/PostForm";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 import { getPostRecommends } from "./_lib/getPostRecommends";
 import PostRecommends from "./_component/PostRecommends";
+import TabSection from "./_component/TabSection";
 export default async function AfterHomePage() {
   const query = new QueryClient();
   await query.prefetchQuery({ queryKey: ["posts", "recommends"], queryFn: getPostRecommends });
@@ -16,7 +17,7 @@ export default async function AfterHomePage() {
         <TabProvider>
           <Tab />
           <PostForm />
-          <PostRecommends />
+          <TabSection />
         </TabProvider>
       </HydrationBoundary>
     </main>
