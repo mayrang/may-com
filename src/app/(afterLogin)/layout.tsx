@@ -5,11 +5,10 @@ import Image from "next/image";
 import zlogo from "../../../public/zlogo.png";
 import NavList from "./_component/NavList";
 import LogoutButton from "./_component/LogoutButton";
-import TrendSection from "./_component/TrendSection";
-import FollowRecommend from "./_component/FollowRecommend";
 import RightSearchZone from "./_component/RightSearchZone";
 import { auth } from "@/auth";
 import RQProvider from "@/app/(afterLogin)/_component/RQProvider";
+import FollowRecommendSection from "./_component/FollowRecommendSection";
 export default async function AfterLoginLayout({
   children,
   modal,
@@ -60,13 +59,7 @@ export default async function AfterLoginLayout({
             <main className={styles.main}>{children}</main>
             <section className={styles.rightSection}>
               <RightSearchZone />
-
-              <div className={styles.followRecommend}>
-                <h3>팔로우 추천</h3>
-                <FollowRecommend />
-                <FollowRecommend />
-                <FollowRecommend />
-              </div>
+              <FollowRecommendSection />
             </section>
           </div>
         </div>
