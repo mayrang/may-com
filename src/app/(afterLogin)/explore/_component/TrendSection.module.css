@@ -1,0 +1,10 @@
+.trend {
+  border-top: 1px solid #eff3f4;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.trend h3 {
+  padding: 12px 16px;
+}

@@ -18,3 +18,7 @@
   margin-top: 2px;
   margin-bottom: 4px;
 }
+
+.container:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
