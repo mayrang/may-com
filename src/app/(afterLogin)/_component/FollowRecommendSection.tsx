@@ -14,7 +14,7 @@ export default function FollowRecommendSection() {
     <div className={styles.followRecommend}>
       <h3>팔로우 추천</h3>
       {data.map((user) => (
-        <FollowRecommend user={user} />
+        <FollowRecommend user={user} key={user.id} />
       ))}
     </div>
   );

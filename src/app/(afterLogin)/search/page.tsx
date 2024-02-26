@@ -3,6 +3,7 @@ import styles from "./SearchPage.module.css";
 import SearchForm from "../_component/SearchForm";
 import Tab from "./_component/Tab";
 import BackButton from "../_component/BackButton";
+import SearchListSection from "../_component/SearchListSection";
 type Props = {
   searchParams: { q: string; f?: string; pf?: string };
 };
@@ -22,6 +23,9 @@ export default function SearchPage({ searchParams }: Props) {
         <div className={styles.homeFixed}>
           <Tab />
         </div>
+      </div>
+      <div className={styles.list}>
+        <SearchListSection searchParams={searchParams} />
       </div>
     </main>
   );
