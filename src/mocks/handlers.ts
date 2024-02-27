@@ -13,6 +13,7 @@ const User = [
   { id: "elonmusk", nickname: "Elon Musk", image: "/yRsRRjGO.jpg" },
   { id: "zerohch0", nickname: "제로초", image: "/5Udwvqim.jpg" },
   { id: "leoturtle", nickname: "레오", image: faker.image.avatar() },
+  { id: "pgss0626", nickname: "메이랑", image: faker.image.avatar() },
 ];
 
 const delay = (ms: number) =>
@@ -144,6 +145,7 @@ export const handlers = [
       },
     ]);
   }),
+  //o
   http.get("/api/search/:tag", ({ request, params }) => {
     const { tag } = params;
     return HttpResponse.json([
@@ -184,6 +186,7 @@ export const handlers = [
       },
     ]);
   }),
+  // o
   http.get("/api/users/:userId/posts", ({ request, params }) => {
     const { userId } = params;
     return HttpResponse.json([
@@ -224,6 +227,7 @@ export const handlers = [
       },
     ]);
   }),
+  // 0
   http.get("/api/users/:userId", ({ request, params }): StrictResponse<any> => {
     const { userId } = params;
     const found = User.find((v) => v.id === userId);
