@@ -2,27 +2,39 @@
 import React, { ChangeEventHandler, FormEventHandler, useState } from "react";
 import styles from "./CommentForm.module.css";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-export default function CommentForm() {
+type Props = {
+  postId: string;
+};
+
+export default function CommentForm({ postId }: Props) {
   const [content, setContent] = useState("");
-  const me = {
-    id: "pagee0626",
-    nickname: "메이랑",
-    image: "/5Udwvqim.jpg",
-  };
-
+  const query = useQueryClient();
+  const data = query.getQueryData(["post", postId]);
+  const { data: me } = useSession();
   const changeContent: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);
   };
-
+  console.log(data, postId);
   const submitPost: FormEventHandler = (e) => {
     e.preventDefault();
   };
+
+  if (!me?.user) {
+    return null;
+  }
+
+  if (!data) {
+    return null;
+  }
+
   return (
     <form className={styles.postForm} onSubmit={submitPost}>
       <div className={styles.postUserSection}>
         <div className={styles.postUserImage}>
-          <Image src={me.image} alt={"profile image"} width={40} height={40} />
+          <Image src={me?.user.image as string} alt={"profile image"} width={40} height={40} />
         </div>
       </div>
       <div className={styles.postInputSection}>
