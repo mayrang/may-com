@@ -3,12 +3,11 @@ import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import React from "react";
 import styles from "./NavList.module.css";
+import { useSession } from "next-auth/react";
 
 export default function NavList() {
   const path = useSelectedLayoutSegment();
-  const me = {
-    id: "pgss0626",
-  };
+  const { data: me } = useSession();
   return (
     <>
       <li>
@@ -117,11 +116,11 @@ export default function NavList() {
           </div>
         </Link>
       </li>
-      {me?.id && (
+      {me?.user?.email && (
         <li>
-          <Link href={`/${me.id}`}>
+          <Link href={`/${me.user.email}`}>
             <div className={styles.navPill}>
-              {path === me.id ? (
+              {path === me.user.email ? (
                 <>
                   <svg
                     width="26"

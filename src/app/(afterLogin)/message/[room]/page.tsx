@@ -6,25 +6,26 @@ import Link from "next/link";
 import cls from "classnames";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
+import { auth } from "@/auth";
 
 dayjs.locale("ko");
 
-export default function ChatRoomPage() {
-  const me = {
-    id: "pagee0626",
-    nickname: "메이랑",
-    image: faker.image.avatar(),
-  };
+export default async function ChatRoomPage() {
+  const session = await auth();
+  const me = session?.user;
+  if (!me) {
+    return null;
+  }
   return (
     <main className={styles.main}>
       <div className={styles.header}>
         <BackButton />
-        <h2>{me.nickname}</h2>
+        <h2>{me.name}</h2>
       </div>
       <Link href={`/${me.id}`} className={styles.userInfo}>
-        <img src={me.image} alt={me.id} />
+        <img src={me.image as string} alt={me.id} />
         <div>
-          <b>{me.nickname}</b>
+          <b>{me.name}</b>
         </div>
         <div>@{me.id}</div>
       </Link>

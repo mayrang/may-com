@@ -2,11 +2,19 @@ import PhotoModal from "@/app/(afterLogin)/@modal/(.)[username]/status/[postId]/
 import AfterHomePage from "@/app/(afterLogin)/home/page";
 import React from "react";
 
-export default function page() {
+type Props = {
+  params: {
+    postId: string;
+    imageId: string;
+  };
+};
+
+export default function page({ params }: Props) {
+  console.log("params2", params);
   return (
     <>
       <AfterHomePage />
-      <PhotoModal />
+      <PhotoModal params={params} />
     </>
   );
 }

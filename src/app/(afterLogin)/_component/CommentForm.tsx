@@ -17,7 +17,7 @@ export default function CommentForm({ postId }: Props) {
   const changeContent: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);
   };
-  console.log(data, postId);
+
   const submitPost: FormEventHandler = (e) => {
     e.preventDefault();
   };
