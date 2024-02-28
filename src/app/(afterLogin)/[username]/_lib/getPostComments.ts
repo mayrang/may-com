@@ -1,9 +1,13 @@
 import { Post } from "@/model/Post";
 import { QueryFunction } from "@tanstack/react-query";
 
-export const getPostComments: QueryFunction<Post[], [_1: string, _2: string, _3: string]> = async ({ queryKey }) => {
+export const getPostComments: QueryFunction<Post[], [_1: string, _2: string, _3: string], number> = async ({
+  queryKey,
+  pageParam,
+}) => {
   const [_1, _2, postId] = queryKey;
-  const res = await fetch(`http://localhost:9090/api/posts/${postId}/comments`, {
+  console.log(postId, pageParam, "check");
+  const res = await fetch(`http://localhost:9090/api/posts/${postId}/comments?cursor=${pageParam || "0"}`, {
     next: {
       tags: ["post", "comments", postId],
     },

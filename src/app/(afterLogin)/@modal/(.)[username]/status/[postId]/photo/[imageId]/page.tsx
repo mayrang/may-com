@@ -18,7 +18,11 @@ export default async function PhotoModal({ params }: Props) {
   const query = new QueryClient();
   const { postId, imageId } = params;
   await query.prefetchQuery({ queryKey: ["post", postId], queryFn: getSinglePost });
-  await query.prefetchQuery({ queryKey: ["post", "comments", postId], queryFn: getPostComments });
+  await query.prefetchInfiniteQuery({
+    queryKey: ["post", "comments", postId],
+    queryFn: getPostComments,
+    initialPageParam: 0,
+  });
   const dehydratedstate = dehydrate(query);
   return (
     <div className={styles.container}>

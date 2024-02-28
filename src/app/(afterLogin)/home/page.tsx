@@ -9,7 +9,11 @@ import PostRecommends from "./_component/PostRecommends";
 import TabSection from "./_component/TabSection";
 export default async function AfterHomePage() {
   const query = new QueryClient();
-  await query.prefetchQuery({ queryKey: ["posts", "recommends"], queryFn: getPostRecommends });
+  await query.prefetchInfiniteQuery({
+    queryKey: ["posts", "recommends"],
+    queryFn: getPostRecommends,
+    initialPageParam: 0,
+  });
   const dehydratedstate = dehydrate(query);
   return (
     <main className={styles.main}>

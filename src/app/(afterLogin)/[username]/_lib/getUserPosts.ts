@@ -1,9 +1,12 @@
 import { Post } from "@/model/Post";
 import { QueryFunction } from "@tanstack/react-query";
 
-export const getUserPosts: QueryFunction<Post[], [_1: string, _2: string, username: string]> = async ({ queryKey }) => {
+export const getUserPosts: QueryFunction<Post[], [_1: string, _2: string, username: string], number> = async ({
+  queryKey,
+  pageParam,
+}) => {
   const [_1, _2, username] = queryKey;
-  const res = await fetch(`http://localhost:9090/api/users/${username}/posts`, {
+  const res = await fetch(`http://localhost:9090/api/users/${username}/posts?curcor=${pageParam}`, {
     next: {
       tags: ["users", "posts", username],
     },

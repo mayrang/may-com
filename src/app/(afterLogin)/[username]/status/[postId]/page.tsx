@@ -7,6 +7,7 @@ import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query
 import { getSinglePost } from "../../_lib/getSinglePost";
 import SinglePostSection from "./_component/SinglePostSection";
 import CommentsSection from "./_component/CommentsSection";
+import { getPostComments } from "../../_lib/getPostComments";
 
 type Props = {
   params: {
@@ -19,7 +20,11 @@ export default async function SinglePostPage({ params }: Props) {
   const { postId } = params;
   const query = new QueryClient();
   await query.prefetchQuery({ queryKey: ["post", postId], queryFn: getSinglePost });
-  await query.prefetchQuery({ queryKey: ["post", "comments", postId] });
+  await query.prefetchInfiniteQuery({
+    queryKey: ["post", "comments", postId],
+    queryFn: getPostComments,
+    initialPageParam: 0,
+  });
   const dehydratedstate = dehydrate(query);
   console.log(params.postId, params.username);
   return (
@@ -31,7 +36,7 @@ export default async function SinglePostPage({ params }: Props) {
         </div>
         <SinglePostSection postId={postId} />
         <CommentForm postId={postId} />
-        <div>
+        <div className={styles.commentZone}>
           <CommentsSection postId={postId} />
         </div>
       </HydrationBoundary>

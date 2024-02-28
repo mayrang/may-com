@@ -1,5 +1,6 @@
-export async function getPostFollowings() {
-  const res = await fetch("http://localhost:9090/api/followingPosts", {
+export async function getPostFollowings({ pageParam }: { pageParam?: number }) {
+  console.log(pageParam, "following check");
+  const res = await fetch(`http://localhost:9090/api/followingPosts?cursor=${pageParam}`, {
     next: {
       tags: ["posts", "followings"],
     },
