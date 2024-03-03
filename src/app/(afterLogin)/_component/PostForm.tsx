@@ -3,9 +3,15 @@ import React, { ChangeEventHandler, FormEventHandler, useState } from "react";
 import styles from "./PostForm.module.css";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-export default function PostForm() {
+import { Session } from "next-auth";
+
+type Props = {
+  me: Session | null;
+};
+
+export default function PostForm({ me }: Props) {
   const [content, setContent] = useState("");
-  const { data: me } = useSession();
+  //const { data: me } = useSession();
   const changeContent: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);
   };
@@ -13,6 +19,7 @@ export default function PostForm() {
   const submitPost: FormEventHandler = (e) => {
     e.preventDefault();
   };
+  console.log("postform", me);
   return (
     <form className={styles.postForm} onSubmit={submitPost}>
       <div className={styles.postUserSection}>

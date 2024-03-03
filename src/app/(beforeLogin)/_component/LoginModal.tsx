@@ -20,7 +20,7 @@ export default function LoginModal() {
     setPassword(e.target.value);
   };
 
-  const submitLoginForm = (e: FormEvent<HTMLFormElement>) => {
+  const submitLoginForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!id.trim()) {
       setMessage("아이디는 필수 입력입니다.");
@@ -30,11 +30,16 @@ export default function LoginModal() {
       setMessage("비밀번호는 필수 입력입니다.");
     }
     try {
-      signIn("credentials", {
+      const response = await signIn("credentials", {
         username: id,
         password: password,
         redirect: false,
       });
+      if (!response || response.error) {
+        console.error(response);
+        setMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
+      }
+
       router.replace("/home");
     } catch (err) {
       console.error(err);

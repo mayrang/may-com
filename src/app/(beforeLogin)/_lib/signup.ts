@@ -19,6 +19,7 @@ export const signupAction = async (prevState: any, formData: FormData) => {
   if (!formData.get("image")) {
     return { message: "no_image" };
   }
+  formData.set("nickname", formData.get("name") as string);
   console.log(formData);
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {

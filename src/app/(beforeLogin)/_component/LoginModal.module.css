@@ -29,6 +29,14 @@
   font-weight: bold;
 }
 
+.message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: red;
+  font-weight: 700;
+}
+
 .modal form {
   display: flex;
   flex-direction: column;
