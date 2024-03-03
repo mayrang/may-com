@@ -51,7 +51,7 @@ export const handlers = [
   }),
   // o
   http.get("/api/postRecommends", async ({ request }) => {
-    delay(1000);
+    delay(3000);
     const url = new URL(request.url);
     const cursor = parseInt(url.searchParams.get("cursor") as string) || 0;
     return HttpResponse.json([

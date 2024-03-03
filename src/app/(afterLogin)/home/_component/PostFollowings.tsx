@@ -1,4 +1,4 @@
-import { InfiniteData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { InfiniteData, useInfiniteQuery, useQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import React, { Fragment, useEffect, useState } from "react";
 import { getPostFollowings } from "../_lib/getPostFollowings";
 import Post from "@/app/(afterLogin)/_component/Post";
@@ -7,7 +7,7 @@ import { useInView } from "react-intersection-observer";
 import useInfiniteScroll from "../_hook/useInfiniteScroll";
 
 export default function PostFollowings() {
-  const { data, isFetching, hasNextPage, fetchNextPage } = useInfiniteQuery<
+  const { data, isFetching, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery<
     IPost[],
     Object,
     InfiniteData<IPost[]>,
