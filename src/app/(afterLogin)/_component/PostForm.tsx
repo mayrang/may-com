@@ -1,24 +1,97 @@
 "use client";
-import React, { ChangeEventHandler, FormEventHandler, useState } from "react";
+import React, { ChangeEventHandler, FormEventHandler, useRef, useState } from "react";
 import styles from "./PostForm.module.css";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { useQueryClient } from "@tanstack/react-query";
+import { Post } from "@/model/Post";
 
 type Props = {
   me: Session | null;
 };
 
 export default function PostForm({ me }: Props) {
+  const queryClient = useQueryClient();
   const [content, setContent] = useState("");
+  const imageRef = useRef<HTMLInputElement | null>(null);
+  const [imagePreview, setImagePreview] = useState<Array<{ dataUrl: string; file: File } | null>>([]);
   //const { data: me } = useSession();
   const changeContent: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);
   };
 
-  const submitPost: FormEventHandler = (e) => {
+  const submitPost: FormEventHandler = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    if (content.trim() === "") {
+      alert("내용은 비워둘 수 없습니다.");
+      return null;
+    }
+    formData.append("content", content);
+    imagePreview.forEach((image) => {
+      image && formData.append("images", image.file);
+    });
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+      if (response.status === 201) {
+        setContent("");
+        setImagePreview([]);
+        const newPost = await response.json();
+        await queryClient.setQueryData(["posts", "recommends"], (prevData: { pages: Post[][] }) => {
+          const shallow = { ...prevData, pages: [...prevData.pages] };
+          shallow.pages[0] = [...shallow.pages[0]];
+          shallow.pages[0].unshift(newPost);
+          return shallow;
+        });
+        await queryClient.setQueryData(["posts", "followings"], (prevData: { pages: Post[][] }) => {
+          const shallow = { ...prevData, pages: [...prevData.pages] };
+          shallow.pages[0] = [...shallow.pages[0]];
+          shallow.pages[0].unshift(newPost);
+          return shallow;
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
+  const clickImageButton = () => {
+    if (imageRef && imageRef?.current) {
+      imageRef.current.click();
+    }
+  };
+
+  const addImage: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    if (e.target.files) {
+      Array.from(e.target.files).forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          setImagePreview((prevPreview) => {
+            const prev = [...prevPreview];
+            prev[index] = { dataUrl: reader.result as string, file };
+            return prev;
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImagePreview((prev) => {
+      const prevCopy = [...prev];
+
+      prevCopy[index] = null;
+      return prevCopy;
+    });
+  };
+
   console.log("postform", me);
   return (
     <form className={styles.postForm} onSubmit={submitPost}>
@@ -34,12 +107,26 @@ export default function PostForm({ me }: Props) {
           onChange={changeContent}
           style={{ height: "48px !important" }}
         />
-        <div style={{ display: "flex" }}></div>
+        <div style={{ display: "flex" }}>
+          {imagePreview.length > 0 &&
+            imagePreview.map(
+              (image, index) =>
+                image && (
+                  <img
+                    key={index}
+                    onClick={() => removeImage(index)}
+                    style={{ width: "100%", objectFit: "contain", maxHeight: 100 }}
+                    src={image.dataUrl}
+                    alt="image"
+                  />
+                )
+            )}
+        </div>
         <div className={styles.postButtonSection}>
           <div className={styles.footerButtons}>
             <div className={styles.footerButtonLeft}>
-              <input multiple hidden type="file" name="imageFiles" />
-              <button className={styles.uploadButton} type="button">
+              <input multiple hidden type="file" ref={imageRef} onChange={addImage} name="imageFiles" />
+              <button className={styles.uploadButton} type="button" onClick={clickImageButton}>
                 <svg width="24" viewBox="0 0 24 24" aria-hidden="true">
                   <g>
                     <path d="M3 5.5C3 4.119 4.119 3 5.5 3h13C19.881 3 21 4.119 21 5.5v13c0 1.381-1.119 2.5-2.5 2.5h-13C4.119 21 3 19.881 3 18.5v-13zM5.5 5c-.276 0-.5.224-.5.5v9.086l3-3 3 3 5-5 3 3V5.5c0-.276-.224-.5-.5-.5h-13zM19 15.414l-3-3-5 5-3-3-3 3V18.5c0 .276.224.5.5.5h13c.276 0 .5-.224.5-.5v-3.086zM9.75 7C8.784 7 8 7.784 8 8.75s.784 1.75 1.75 1.75 1.75-.784 1.75-1.75S10.716 7 9.75 7z"></path>

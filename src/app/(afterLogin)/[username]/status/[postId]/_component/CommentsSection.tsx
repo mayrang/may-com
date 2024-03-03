@@ -6,7 +6,6 @@ import { getPostComments } from "../../../_lib/getPostComments";
 import Post from "@/app/(afterLogin)/_component/Post";
 import { useInView } from "react-intersection-observer";
 import useInfiniteScroll from "@/app/(afterLogin)/home/_hook/useInfiniteScroll";
-import { getPostFollowings } from "@/app/(afterLogin)/home/_lib/getPostFollowings";
 type Props = {
   postId: string;
 };
