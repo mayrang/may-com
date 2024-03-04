@@ -7,12 +7,16 @@ export const getSearchPosts: QueryFunction<
   number
 > = async ({ queryKey, pageParam }) => {
   const [_1, _2, searchParams] = queryKey;
-  const res = await fetch(`http://localhost:9090/api/search/${searchParams.q}?curcor=${pageParam}`, {
-    next: {
-      tags: ["posts", "search", searchParams.q],
-    },
-    cache: "no-cache",
-  });
+  const newSearchParams = new URLSearchParams(searchParams);
+  const res = await fetch(
+    `http://localhost:9090/api/search/${encodeURIComponent(newSearchParams.get("q") as string)}?curcor=${pageParam}`,
+    {
+      next: {
+        tags: ["posts", "search", searchParams.q],
+      },
+      cache: "no-cache",
+    }
+  );
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }

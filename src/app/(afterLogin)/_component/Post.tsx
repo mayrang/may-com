@@ -1,13 +1,11 @@
 import React from "react";
 import styles from "./Post.module.css";
 import Link from "next/link";
-import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
 
 import PostArticle from "./PostArticle";
-import { faker } from "@faker-js/faker";
 import ActionButtons from "./ActionButtons";
 import PostImages from "./PostImages";
 import { Post } from "@/model/Post";
@@ -20,6 +18,7 @@ type Props = {
 };
 
 export default function Post({ showImage = true, post }: Props) {
+  console.log("post check", post);
   return (
     <PostArticle post={post}>
       <div className={styles.postWrapper}>

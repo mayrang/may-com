@@ -51,7 +51,7 @@ export default function PostForm({ me }: Props) {
           return shallow;
         });
       }
-      if (queryClient.getQueryData(["posts", "recommends"])) {
+      if (queryClient.getQueryData(["posts", "followings"])) {
         await queryClient.setQueryData(["posts", "followings"], (prevData: { pages: Post[][] }) => {
           const shallow = { ...prevData, pages: [...prevData.pages] };
           shallow.pages[0] = [...shallow.pages[0]];
@@ -61,7 +61,7 @@ export default function PostForm({ me }: Props) {
       }
     },
     onError: (error) => {
-      console.log(error);
+      console.log("post create", error);
       alert("저장 과정에서 에러가 발생했습니다.");
     },
   });
