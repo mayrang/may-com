@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { MouseEventHandler } from "react";
 import styles from "./Post.module.css";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -18,12 +19,16 @@ type Props = {
 };
 
 export default function Post({ showImage = true, post }: Props) {
-  console.log("post check", post);
+  const clickProfile:MouseEventHandler = (e) => {
+    e.stopPropagation();
+
+  }
+
   return (
     <PostArticle post={post}>
       <div className={styles.postWrapper}>
         <div className={styles.postUserSection}>
-          <Link href={`/${post.User.id}`} className={styles.postUserImage}>
+          <Link href={`/${post.User.id}`} className={styles.postUserImage} onClick={clickProfile}>
             <img src={post.User.image} alt={post.User.nickname} width={40} height={40} />
             <div className={styles.postShade}></div>
           </Link>
@@ -38,7 +43,7 @@ export default function Post({ showImage = true, post }: Props) {
           </div>
           <div>{post.content}</div>
           {showImage && <PostImages post={post} />}
-          <ActionButtons white={false} />
+          <ActionButtons white={false} post={post} />
         </div>
       </div>
     </PostArticle>

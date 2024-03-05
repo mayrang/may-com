@@ -12,7 +12,7 @@ type Props = {
 
 export default function PostSection({ postId }: Props) {
   const { data: post, error } = useQuery<IPost, Object, IPost, [_1: string, _2: string]>({
-    queryKey: ["post", postId],
+    queryKey: ["posts", postId],
     queryFn: getSinglePost,
   });
 

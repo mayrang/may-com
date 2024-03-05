@@ -17,9 +17,9 @@ type Props = {
 export default async function PhotoModal({ params }: Props) {
   const query = new QueryClient();
   const { postId, imageId } = params;
-  await query.prefetchQuery({ queryKey: ["post", postId], queryFn: getSinglePost });
+  await query.prefetchQuery({ queryKey: ["posts", postId], queryFn: getSinglePost });
   await query.prefetchInfiniteQuery({
-    queryKey: ["post", "comments", postId],
+    queryKey: ["posts", "comments", postId],
     queryFn: getPostComments,
     initialPageParam: 0,
   });

@@ -20,16 +20,19 @@ export const signupAction = async (prevState: any, formData: FormData) => {
     return { message: "no_image" };
   }
   formData.set("nickname", formData.get("name") as string);
-  console.log(formData);
+  formData.delete("name");
+  console.log(formData, `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`);
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
       method: "post",
       body: formData,
+      
       credentials: "include", // 이 속성이 있어야 쿠키 전달 가능
     });
     if (response.status === 403) {
       return { message: "user_exist" };
     }
+
     await signIn("credentials", {
       username: formData.get("id"),
       password: formData.get("password"),
@@ -37,7 +40,7 @@ export const signupAction = async (prevState: any, formData: FormData) => {
     });
     shouldRedirect = true;
   } catch (err) {
-    console.error(err);
+    console.log(err);
     shouldRedirect = false;
     return { message: "response_error" };
   }

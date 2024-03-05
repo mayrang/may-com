@@ -35,14 +35,15 @@ export default function LoginModal() {
         password: password,
         redirect: false,
       });
+      console.log("response", response)
       if (!response || response.error) {
-        console.error(response);
+        console.error("response", response);
         setMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
       }
 
       router.replace("/home");
     } catch (err) {
-      console.error(err);
+      console.error("error", err);
       setMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
   };

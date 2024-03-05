@@ -13,7 +13,7 @@ type Props = {
 
 export default function ImageSection({ postId, imageId }: Props) {
   const { data: post } = useQuery<IPost, Object, IPost, [_1: string, _2: string]>({
-    queryKey: ["post", postId],
+    queryKey: ["posts", postId],
     queryFn: getSinglePost,
   });
   const image = post?.Images.find((image) => parseInt(imageId) === image.imageId);
@@ -27,7 +27,7 @@ export default function ImageSection({ postId, imageId }: Props) {
       <div className={styles.image} style={{ backgroundImage: `url("${image?.link}")` }}></div>
       <div className={styles.buttonZone}>
         <div className={styles.buttonInner}>
-          <ActionButtons />
+          <ActionButtons post={post}/>
         </div>
       </div>
     </div>

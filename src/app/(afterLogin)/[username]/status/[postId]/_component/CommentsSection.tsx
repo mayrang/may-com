@@ -21,7 +21,7 @@ export default function CommentsSection({ postId }: Props) {
     [_1: string, _2: string, _3: string],
     number
   >({
-    queryKey: ["post", "comments", postId],
+    queryKey: ["posts", "comments", postId],
     queryFn: getPostComments,
     staleTime: 60 * 1000,
     enabled: !!post,

@@ -9,7 +9,7 @@ export const getPostComments: QueryFunction<Post[], [_1: string, _2: string, _3:
   console.log(postId, pageParam, "check");
   const res = await fetch(`http://localhost:9090/api/posts/${postId}/comments?cursor=${pageParam || "0"}`, {
     next: {
-      tags: ["post", "comments", postId],
+      tags: ["posts", "comments", postId],
     },
     cache: "no-cache",
   });

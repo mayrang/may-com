@@ -5,7 +5,7 @@ export const getSinglePost: QueryFunction<Post, [_1: string, _2: string]> = asyn
   const [_1, postId] = queryKey;
   const res = await fetch(`http://localhost:9090/api/posts/${postId}`, {
     next: {
-      tags: ["post", postId],
+      tags: ["posts", postId],
     },
     cache: "no-cache",
   });

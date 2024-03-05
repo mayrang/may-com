@@ -1,15 +1,182 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import styles from "./ActionButtons.module.css";
 import cls from "classnames";
+import { Post } from "@/model/Post";
+import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
+import { produce } from "immer";
+import { useSession } from "next-auth/react";
 
 type Props = {
   white?: boolean;
+  post: Post
 };
 
-export default function ActionButtons({ white = true }: Props) {
-  const commented = true;
-  const reposted = true;
-  const liked = true;
+export default function ActionButtons({ white = true, post }: Props) {
+  const {postId} = post
+  const queryClient = useQueryClient();
+  const {data:me} = useSession();
+  const heart = useMutation({
+    mutationFn:  () => {
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${postId}/heart`, {
+        method: "POST",
+        credentials: "include"
+      })
+    },
+    onMutate:  () => {
+      const queryCache = queryClient.getQueryCache();
+      const querykeys = queryCache.getAll().map((cache) => cache.queryKey);
+      querykeys.forEach((queryKey) => {
+        if(queryKey[0] === "posts"){
+          const values:Post | InfiniteData<Post[]>|undefined = queryClient.getQueryData(queryKey);
+          if(values && "pages" in values){
+            const obj = values.pages.flat().find((post) => post.postId === postId);
+            if(obj){
+              const pageIndex = values.pages.findIndex((page) => page.includes(obj));
+              const index = values.pages[pageIndex].findIndex((post) => post.postId === obj.postId);
+              const newValues = produce(values, draft=> {
+                draft.pages[pageIndex][index].Hearts.push({userId: me?.user?.email as string});
+                draft.pages[pageIndex][index]._count.Hearts += 1;
+              });
+              queryClient.setQueryData(queryKey, newValues);
+            }
+          }else if(values){
+            const newValue = produce(values, draft => {
+              draft.Hearts.push({userId: me?.user?.email as string});
+              draft._count.Hearts += 1;
+            })
+            queryClient.setQueryData(queryKey, newValue)
+          }
+        }
+      })
+    },
+    onError: (err) => {
+      console.log(err);
+      const queryCache = queryClient.getQueryCache();
+      const querykeys = queryCache.getAll().map((cache) => cache.queryKey);
+      querykeys.forEach((queryKey) => {
+        if(queryKey[0] === "posts"){
+          const values:Post | InfiniteData<Post[]>|undefined = queryClient.getQueryData(queryKey);
+          if(values && "pages" in values){
+            const obj = values.pages.flat().find((post) => post.postId === postId);
+            if(obj){
+              const pageIndex = values.pages.findIndex((page) => page.includes(obj));
+              const index = values.pages[pageIndex].findIndex((post) => post.postId === obj.postId);
+              const newValues = produce(values, draft=> {
+                draft.pages[pageIndex][index].Hearts =  draft.pages[pageIndex][index].Hearts.filter((user) => user.userId !== me?.user?.email as string);
+                draft.pages[pageIndex][index]._count.Hearts -= 1;
+              });
+              queryClient.setQueryData(queryKey, newValues);
+            }
+          }else if(values){
+            const newValue = produce(values, draft => {
+              draft.Hearts =  draft.Hearts.filter((user) => user.userId !== me?.user?.email as string);
+              draft._count.Hearts += 1;
+            })
+            queryClient.setQueryData(queryKey, newValue)
+          }
+        }
+      })
+      
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["posts"]
+      })
+    }
+  });
+
+  const unheart = useMutation({
+    mutationFn: () => {
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${postId}/heart`, {
+        method: "delete",
+        credentials: "include"
+      })
+    },
+    onMutate: () => {
+      const queryCache = queryClient.getQueryCache();
+      const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
+      queryKeys.forEach((queryKey) => {
+        if(queryKey[0] === "posts"){
+          const values:Post|InfiniteData<Post[]>|undefined = queryClient.getQueryData(queryKey);
+        
+          if(values && "pages" in values){
+            const obj = values.pages.flat().find((post) => post.postId === postId);
+            if(obj){
+              const pageIndex = values.pages.findIndex((page) => page.includes(obj));
+              const index = values.pages[pageIndex].findIndex((post) => post.postId === obj.postId);
+              const newValues = produce(values, draft => {
+                draft.pages[pageIndex][index].Hearts = draft.pages[pageIndex][index].Hearts.filter((user) => user.userId !== me?.user?.email as string);
+                draft.pages[pageIndex][index]._count.Hearts -= 1;
+              })
+              queryClient.setQueryData(queryKey, newValues);
+            }
+          }else if(values){
+            console.log("values", values)
+            const newValue = produce(values, draft => {
+              console.log(draft)
+              draft.Hearts = draft.Hearts.filter((user) => user.userId !== me?.user?.email as string);
+              draft._count.Hearts -= 1;
+            })
+            queryClient.setQueryData(queryKey, newValue)
+          }
+        }
+        
+
+
+      })
+    },
+
+    onError: (error) => {
+      console.log("unheart error", error)
+      const queryCache = queryClient.getQueryCache();
+      const queryKeys= queryCache.getAll().map((cache) => cache.queryKey);
+      queryKeys.forEach((queryKey) => {
+        if(queryKey[0] === "posts"){
+          const values:Post|InfiniteData<Post[]>|undefined  = queryClient.getQueryData(queryKey);
+          if(values && "pages" in values){
+            const obj = values.pages.flat().find((post) => post.postId === postId);
+            if(obj){
+              const pageIndex = values.pages.findIndex((page) => page.includes(obj));
+              const index = values.pages[pageIndex].findIndex((page) => page.postId === obj.postId);
+              const newValues = produce(values, draft => {
+                draft.pages[pageIndex][index].Hearts.push({userId: me?.user?.email as string})
+                draft.pages[pageIndex][index]._count.Hearts += 1;
+              })
+              queryClient.setQueryData(queryKey, newValues);
+            }
+          }else if(values){
+            const newValue = produce(values, draft => {
+              draft.Hearts.push({userId: me?.user?.email as string});
+              draft._count.Hearts += 1;
+            })
+            queryClient.setQueryData(queryKey, newValue);
+          }
+        }
+       
+      })
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["posts"]
+      })
+    }
+  })
+
+  const commented = !!post.Comments.find((user) => user.userId === me?.user?.email);
+  const reposted = !!post.Comments.find((user) => user.userId === me?.user?.email);
+  const liked = !!post.Hearts.find((user) => user.userId === me?.user?.email);
+
+
+  const clickHeart:MouseEventHandler = (e) => {
+    e.stopPropagation();
+    if(liked){
+      unheart.mutate();
+    }else{
+ 
+      heart.mutate();
+    }
+  }
+
   return (
     <div className={styles.actionButtons}>
       <div className={cls(styles.commentButton, commented && styles.commented, white && styles.white)}>
@@ -20,7 +187,7 @@ export default function ActionButtons({ white = true }: Props) {
             </g>
           </svg>
         </button>
-        <div className={styles.count}>27</div>
+        <div className={styles.count}>{post._count.Comments}  </div>
       </div>
       <div className={cls(styles.repostButton, reposted && styles.reposeted, white && styles.white)}>
         <button>
@@ -30,17 +197,17 @@ export default function ActionButtons({ white = true }: Props) {
             </g>
           </svg>
         </button>
-        <div className={styles.count}>20</div>
+        <div className={styles.count}>{post._count.Reposts}</div>
       </div>
       <div className={cls(styles.heartButton, liked && styles.liked, white && styles.white)}>
-        <button>
+        <button onClick={clickHeart}> 
           <svg width="24" viewBox="0 0 24 24" aria-hidden="true">
             <g>
               <path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"></path>
             </g>
           </svg>
         </button>
-        <div className={styles.count}>35</div>
+        <div className={styles.count}>{post._count.Hearts}</div>
       </div>
     </div>
   );

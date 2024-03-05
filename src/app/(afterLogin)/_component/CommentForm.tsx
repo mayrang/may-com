@@ -12,7 +12,7 @@ type Props = {
 export default function CommentForm({ postId }: Props) {
   const [content, setContent] = useState("");
   const query = useQueryClient();
-  const data = query.getQueryData(["post", postId]);
+  const data = query.getQueryData(["posts", postId]);
   const { data: me } = useSession();
   const changeContent: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);
