@@ -9,6 +9,8 @@ import { getUser } from "./_lib/getUser";
 import { getUserPosts } from "./_lib/getUserPosts";
 import UserInfo from "./_component/UserInfo";
 import UserPosts from "./_component/UserPosts";
+import { getUserServer } from "./_lib/getUserServer";
+import { getUserPostsServer } from "./_lib/getUserPostsServer";
 
 type Props = {
   params: { username: string };
@@ -17,10 +19,10 @@ type Props = {
 export default async function UserProfilePage({ params }: Props) {
   const { username } = params;
   const query = new QueryClient();
-  await query.prefetchQuery({ queryKey: ["users", username], queryFn: getUser });
+  await query.prefetchQuery({ queryKey: ["users", username], queryFn: getUserServer });
   await query.prefetchInfiniteQuery({
-    queryKey: ["users", "posts", username],
-    queryFn: getUserPosts,
+    queryKey: ["posts", "users", username],
+    queryFn: getUserPostsServer,
     initialPageParam: 0,
   });
   const dehydratedstate = dehydrate(query);

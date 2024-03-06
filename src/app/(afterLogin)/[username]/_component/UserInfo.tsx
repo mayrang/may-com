@@ -7,18 +7,20 @@ import { useQuery } from "@tanstack/react-query";
 import { User } from "@/model/User";
 import { getUser } from "../_lib/getUser";
 import styles from "../ProfilePage.module.css";
+import { useSession } from "next-auth/react";
 type Props = {
   username: string;
 };
 
 export default function UserInfo({ username }: Props) {
   const {
-    data: me,
+    data: user,
     isLoading,
     error,
   } = useQuery<User, Object, User, [_1: string, username: string]>({ queryKey: ["users", username], queryFn: getUser });
-
-  if (!me || error) {
+  const {data:me} = useSession();
+  console.log("info", user);
+  if (!user || error) {
     return (
       <>
         <div className={styles.header}>
@@ -52,23 +54,23 @@ export default function UserInfo({ username }: Props) {
     <>
       <div className={styles.header}>
         <BackButton />
-        <h3 className={styles.headerTitle}>{me.nickname}</h3>
+        <h3 className={styles.headerTitle}>{user.nickname}</h3>
       </div>
       <div className={styles.userZone}>
         <div className={styles.userRow}>
           <div className={styles.userImage}>
-            <Image src={me.image} alt="profile image" width={134} height={134} />
+            <Image src={user.image} alt="profile image" width={134} height={134} />
           </div>
           <div className={styles.userName}>
-            <div>{me.nickname}</div>
-            <div>@ {me.id}</div>
+            <div>{user.nickname}</div>
+            <div>@ {user.id}</div>
           </div>
-          <FollowButton />
+          {me?.user?.email !== user.id &&<FollowButton user={user}/>}
         </div>
 
         <div className={styles.userFollower}>
-          <div>0 팔로워</div>&nbsp;
-          <div>0 팔로우 중</div>
+          <div>{user._count.Followers} 팔로워</div>&nbsp;
+          <div>{user._count.Followings} 팔로우 중</div>
         </div>
       </div>
     </>

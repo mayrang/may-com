@@ -10,6 +10,7 @@ export default function FollowRecommendSection() {
   if (!data) {
     return null;
   }
+
   return (
     <div className={styles.followRecommend}>
       <h3>팔로우 추천</h3>

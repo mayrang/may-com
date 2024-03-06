@@ -18,7 +18,7 @@ export default function UserPosts({ username }: Props) {
     [_1: string, _2: string, username: string],
     number
   >({
-    queryKey: ["users", "posts", username],
+    queryKey: ["posts", "users", username],
     queryFn: getUserPosts,
     getNextPageParam: (lastPage) => lastPage.at(-1)?.postId,
     initialPageParam: 0,

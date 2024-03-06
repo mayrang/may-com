@@ -23,6 +23,7 @@ export default function ActionButtons({ white = true, post }: Props) {
       })
     },
     onMutate:  () => {
+      
       const queryCache = queryClient.getQueryCache();
       const querykeys = queryCache.getAll().map((cache) => cache.queryKey);
       querykeys.forEach((queryKey) => {
@@ -93,6 +94,7 @@ export default function ActionButtons({ white = true, post }: Props) {
       })
     },
     onMutate: () => {
+      
       const queryCache = queryClient.getQueryCache();
       const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
       queryKeys.forEach((queryKey) => {
