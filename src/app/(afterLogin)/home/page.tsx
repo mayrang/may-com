@@ -6,6 +6,12 @@ import PostForm from "../_component/PostForm";
 import Loading from "./loading";
 import TabSectionSuspense from "./_component/TabSectionSuspense";
 import { auth } from "@/auth";
+import { Metadata } from "next";
+
+export const metadata:Metadata = {
+  title: "홈 / May",
+  description: "홈"
+}
 export default async function AfterHomePage() {
   const session = await auth();
   console.log("session page", session);

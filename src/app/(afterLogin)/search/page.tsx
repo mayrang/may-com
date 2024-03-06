@@ -8,6 +8,14 @@ type Props = {
   searchParams: { q: string; f?: string; pf?: string };
 };
 
+
+export async function generateMetadata({searchParams}: Props){
+  return {
+    title: `${searchParams.q} / May`,
+    description: `${searchParams.q} 검색 결과입니다.`
+  }
+}
+
 export default function SearchPage({ searchParams }: Props) {
   return (
     <main className={styles.main}>

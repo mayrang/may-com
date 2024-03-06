@@ -11,10 +11,19 @@ import UserInfo from "./_component/UserInfo";
 import UserPosts from "./_component/UserPosts";
 import { getUserServer } from "./_lib/getUserServer";
 import { getUserPostsServer } from "./_lib/getUserPostsServer";
+import { User } from "@/model/User";
 
 type Props = {
   params: { username: string };
 };
+
+export async function generateMetadata({params}: Props){
+  const user:User = await getUserServer({queryKey: ["users", params.username]})
+  return {
+    title: `${user.nickname} (${user.id}) / May`,
+    description: `${user.nickname} (${user.id}) 프로필입니다.`
+  }
+}
 
 export default async function UserProfilePage({ params }: Props) {
   const { username } = params;
