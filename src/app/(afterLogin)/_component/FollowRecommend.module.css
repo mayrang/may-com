@@ -46,3 +46,13 @@
   height: 32px;
   border-radius: 16px;
 }
+
+
+.followed button{
+  color: rgb(0, 0, 0) !important;
+  background-color: rgb(0, 0, 0, .1) !important;
+}
+
+.followButtonSection button:hover{
+  background-color: rgba(0, 0, 0, .6);
+}

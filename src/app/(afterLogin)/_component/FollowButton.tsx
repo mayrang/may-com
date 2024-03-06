@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { User } from "@/model/User";
 import { produce } from "immer";
+import cls from "classnames"
 
 type Props = {
   user: User
@@ -178,7 +179,7 @@ export default function FollowButton({user}: Props) {
     return;
   };
   return (
-    <div className={styles.followButtonSection}>
+    <div className={cls(styles.followButtonSection, followered && styles.followed) }>
       <button onClick={clickFollow}>{followered ? "언팔로우" : "팔로우"}</button>
     </div>
   );
