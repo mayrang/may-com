@@ -19,31 +19,36 @@ type Props = {
 };
 
 export default function Post({ showImage = true, post }: Props) {
+  let target = post;
+  if(post.Original){
+    target = post.Original
+  }
+
   const clickProfile:MouseEventHandler = (e) => {
     e.stopPropagation();
 
   }
 
   return (
-    <PostArticle post={post}>
+    <PostArticle post={target}>
       <div className={styles.postWrapper}>
         <div className={styles.postUserSection}>
-          <Link href={`/${post.User.id}`} className={styles.postUserImage} onClick={clickProfile}>
-            <img src={post.User.image} alt={post.User.nickname} width={40} height={40} />
+          <Link href={`/${target.User.id}`} className={styles.postUserImage} onClick={clickProfile}>
+            <img src={target.User.image} alt={target.User.nickname} width={40} height={40} />
             <div className={styles.postShade}></div>
           </Link>
         </div>
         <div className={styles.postBody}>
           <div className={styles.postMeta}>
-            <Link href={`/${post.User.id}`}>
-              <span className={styles.postUserName}>{post.User.nickname}</span>&nbsp;<span>@{post.User.id}</span>
+            <Link href={`/${target.User.id}`}>
+              <span className={styles.postUserName}>{target.User.nickname}</span>&nbsp;<span>@{target.User.id}</span>
               &nbsp;·&nbsp;
             </Link>
-            <span className={styles.postDate}>{dayjs(post.createdAt).fromNow(true)}</span>
+            <span className={styles.postDate}>{dayjs(target.createdAt).fromNow(true)}</span>
           </div>
-          <div>{post.content}</div>
-          {showImage && <PostImages post={post} />}
-          <ActionButtons white={false} post={post} />
+          <div>{target.content}</div>
+          {showImage && <PostImages post={target} />}
+          <ActionButtons white={false} post={target} />
         </div>
       </div>
     </PostArticle>

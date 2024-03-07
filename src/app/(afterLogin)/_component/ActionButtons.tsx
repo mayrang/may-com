@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import React, { FormEvent, MouseEventHandler } from "react";
 import styles from "./ActionButtons.module.css";
 import cls from "classnames";
 import { Post } from "@/model/Post";
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function ActionButtons({ white = true, post }: Props) {
-  const {postId} = post
+  const {postId, content, Images} = post
   const queryClient = useQueryClient();
   const {data:me} = useSession();
   const heart = useMutation({
@@ -103,9 +103,11 @@ export default function ActionButtons({ white = true, post }: Props) {
         
           if(values && "pages" in values){
             const obj = values.pages.flat().find((post) => post.postId === postId);
+            const repostObj = values.pages.flat().find((post) => post?.Original.postId === postId);
             if(obj){
               const pageIndex = values.pages.findIndex((page) => page.includes(obj));
               const index = values.pages[pageIndex].findIndex((post) => post.postId === obj.postId);
+              
               const newValues = produce(values, draft => {
                 draft.pages[pageIndex][index].Hearts = draft.pages[pageIndex][index].Hearts.filter((user) => user.userId !== me?.user?.email as string);
                 draft.pages[pageIndex][index]._count.Hearts -= 1;
@@ -162,11 +164,116 @@ export default function ActionButtons({ white = true, post }: Props) {
         queryKey: ["posts"]
       })
     }
+  });
+
+  const repost = useMutation({
+    mutationFn: async () => {    
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${postId}/reposts`, {
+        credentials: "include",
+        method: "POST"
+      });
+    },
+    onSuccess: async (response) => {
+      if(!response.ok){
+        return 
+      }
+      const newPost = await response?.json()
+      console.log("newPost", newPost)
+      const queryCache = queryClient.getQueryCache();
+      const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
+      queryKeys.forEach((queryKey) => {
+        if(queryKey[0] === "posts"){
+          const values:Post|InfiniteData<Post[]>|undefined = queryClient.getQueryData(queryKey);
+          if(values && "pages" in values){
+            const obj = values.pages.flat().find((post) => post.postId === postId);
+            if(obj){
+              const pageIndex = values.pages.findIndex((page) => page.includes(obj));
+              const index = values.pages[pageIndex].findIndex((post) => post.postId === obj.postId);
+              if(index > -1){
+                const newValues = produce(values, draft => {
+                  draft.pages[pageIndex][index].Reposts.push({userId: me?.user?.email as string});
+                  draft.pages[pageIndex][index]._count.Reposts += 1;
+                  draft.pages[0].unshift(newPost);
+                })
+                queryClient.setQueryData(queryKey, newValues);
+              }
+             
+            }
+          
+          }else if(values){
+            const newValue = produce(values, draft => {
+              draft.Reposts.push({userId: me?.user?.email as string});
+              draft._count.Reposts += 1;
+            });
+            queryClient.setQueryData(queryKey, newValue);
+          }
+        }
+        
+      })
+    },
+    onError: (error) => {
+      console.log("repost error", error);
+      alert("재개시 과정에서 에러가 발생했습니다.");
+    }
+  });
+
+  const unrepost = useMutation({
+    mutationFn: async () =>  {
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts/${postId}/reposts`, {
+        method: "DELETE",
+        credentials: "include"
+      })
+    },
+    onSuccess: async (response) => {
+      if(!response.ok){
+        return;
+      }
+      const queryCache = queryClient.getQueryCache();
+      const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
+      queryKeys.forEach((queryKey) => {
+        if(queryKey[0] === "posts"){
+          const values:Post|InfiniteData<Post[]>|undefined = queryClient.getQueryData(queryKey);
+        
+          if(values && "pages" in values){
+            const obj = values.pages.flat().find((post) => post.postId === postId);
+       
+            const repostObj = values.pages.flat().find((post) => post?.Original && post?.Original.postId === postId);
+            console.log(repostObj, "obj")
+            if(obj && repostObj){
+              const pageIndex = values.pages.findIndex((page) => page.includes(obj));
+              const index = values.pages[pageIndex].findIndex((post) => post.postId === obj.postId);
+              const repostPageIndex = values.pages.findIndex((page) => page.includes(repostObj));
+              
+              if(index > -1 ){
+               
+                const newValues = produce(values, draft => {
+                  draft.pages[pageIndex][index].Reposts = draft.pages[pageIndex][index].Reposts.filter((user) => user.userId !== me?.user?.email as string);
+                  draft.pages[pageIndex][index]._count.Reposts -= 1;
+                  draft.pages[repostPageIndex] = draft.pages[repostPageIndex].filter((post) => !post?.Original ||post?.Original.postId !== repostObj.Original.postId)
+                })
+                queryClient.setQueryData(queryKey, newValues)
+              }
+            }
+        }else if(values){
+          const newValue = produce(values, draft => {
+            draft.Reposts = draft.Reposts.filter((user) => user.userId !== me?.user?.email as string);
+            draft._count.Reposts -= 1;
+          });
+          queryClient.setQueryData(queryKey, newValue);;
+        }
+        
+        }
+      })
+    },
+    onError: (error) => {
+      console.log(error);
+      alert("재개시를 삭제하는 과정에서 에러가 발생했습니다.")
+    }
   })
 
-  const commented = !!post.Comments.find((user) => user.userId === me?.user?.email);
-  const reposted = !!post.Comments.find((user) => user.userId === me?.user?.email);
-  const liked = !!post.Hearts.find((user) => user.userId === me?.user?.email);
+  const commented = !!post.Comments?.find((user) => user.userId === me?.user?.email);
+  const reposted = !!post.Reposts?.find((user) => user.userId === me?.user?.email);
+  const liked = !!post.Hearts?.find((user) => user.userId === me?.user?.email);
 
 
   const clickHeart:MouseEventHandler = (e) => {
@@ -176,6 +283,16 @@ export default function ActionButtons({ white = true, post }: Props) {
     }else{
  
       heart.mutate();
+    }
+  }
+
+  const clickRepost:MouseEventHandler = (e) => {
+    e.preventDefault()
+    e.stopPropagation();
+    if(reposted){
+      unrepost.mutate()
+    }else{
+      repost.mutate()
     }
   }
 
@@ -189,17 +306,17 @@ export default function ActionButtons({ white = true, post }: Props) {
             </g>
           </svg>
         </button>
-        <div className={styles.count}>{post._count.Comments}  </div>
+        <div className={styles.count}>{post?._count?.Comments || 0}  </div>
       </div>
       <div className={cls(styles.repostButton, reposted && styles.reposeted, white && styles.white)}>
-        <button>
+        <button onClick={clickRepost}>
           <svg width="24" viewBox="0 0 24 24" aria-hidden="true">
             <g>
               <path d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"></path>
             </g>
           </svg>
         </button>
-        <div className={styles.count}>{post._count.Reposts}</div>
+        <div className={styles.count}>{post?._count?.Reposts || 0}</div>
       </div>
       <div className={cls(styles.heartButton, liked && styles.liked, white && styles.white)}>
         <button onClick={clickHeart}> 
@@ -209,7 +326,7 @@ export default function ActionButtons({ white = true, post }: Props) {
             </g>
           </svg>
         </button>
-        <div className={styles.count}>{post._count.Hearts}</div>
+        <div className={styles.count}>{post?._count?.Hearts || 0}</div>
       </div>
     </div>
   );

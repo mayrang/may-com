@@ -6,6 +6,7 @@ export async function getPostFollowings({ pageParam }: { pageParam?: number }) {
     },
     cache: "no-cache",
     credentials: "include",
+    
   });
   console.log("res", res);
   if (!res.ok) {

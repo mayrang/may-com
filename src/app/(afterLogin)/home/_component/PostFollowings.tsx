@@ -5,6 +5,7 @@ import Post from "@/app/(afterLogin)/_component/Post";
 import { Post as IPost } from "@/model/Post";
 import { useInView } from "react-intersection-observer";
 import useInfiniteScroll from "../_hook/useInfiniteScroll";
+import { getPostFollowingsServer } from "../_lib/getPostFollowingsServer";
 
 export default function PostFollowings() {
   const { data, isFetching, hasNextPage, fetchNextPage } = useSuspenseInfiniteQuery<
