@@ -2,10 +2,11 @@
 import React, { ChangeEventHandler, FormEvent, FormEventHandler, useRef, useState } from "react";
 import styles from "./PostForm.module.css";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Post } from "@/model/Post";
+import { produce } from "immer";
+import ReactTextareaAutosize from "react-textarea-autosize";
 
 type Props = {
   me: Session | null;
@@ -43,22 +44,20 @@ export default function PostForm({ me }: Props) {
       setContent("");
       setImagePreview([]);
       const newPost = await response?.json();
-      if (queryClient.getQueryData(["posts", "recommends"])) {
-        await queryClient.setQueryData(["posts", "recommends"], (prevData: { pages: Post[][] }) => {
-          const shallow = { ...prevData, pages: [...prevData.pages] };
-          shallow.pages[0] = [...shallow.pages[0]];
-          shallow.pages[0].unshift(newPost);
-          return shallow;
-        });
-      }
-      if (queryClient.getQueryData(["posts", "followings"])) {
-        await queryClient.setQueryData(["posts", "followings"], (prevData: { pages: Post[][] }) => {
-          const shallow = { ...prevData, pages: [...prevData.pages] };
-          shallow.pages[0] = [...shallow.pages[0]];
-          shallow.pages[0].unshift(newPost);
-          return shallow;
-        });
-      }
+      const queryCache = queryClient.getQueryCache();
+      const queryKeys = queryCache.getAll().map((cache) => cache.queryKey);
+      queryKeys.forEach((queryKey) => {
+        if(queryKey[0] === "posts"){
+          const values:Post|InfiniteData<Post[]>|undefined = queryClient.getQueryData(queryKey);
+          if(values && "pages" in values){
+            const newValues = produce(values, draft => {
+              draft.pages[0].unshift(newPost);
+            });
+            queryClient.setQueryData(queryKey, newValues);
+          }
+        }
+      })
+    
     },
     onError: (error) => {
       console.log("post create", error);
@@ -107,11 +106,11 @@ export default function PostForm({ me }: Props) {
         </div>
       </div>
       <div className={styles.postInputSection}>
-        <textarea
+        <ReactTextareaAutosize
           value={content}
           placeholder="무슨 일이 일어나고 있나요?"
           onChange={changeContent}
-          style={{ height: "48px !important" }}
+          
         />
         <div style={{ display: "flex" }}>
           {imagePreview.length > 0 &&

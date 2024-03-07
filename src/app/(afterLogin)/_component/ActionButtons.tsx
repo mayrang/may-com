@@ -282,6 +282,7 @@ export default function ActionButtons({ white = true, post }: Props) {
 
   const clickComment:MouseEventHandler = (e) => {
     e.stopPropagation();
+    console.log("click", post)
     modalStore.setMode("comment");
     modalStore.setData(post);
     router.push("/compose/tweet")

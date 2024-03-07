@@ -15,8 +15,8 @@ export const useModalStore = create<ModalStore>((set) => ({
     setMode: (mode) => {
         set({mode});
     },
-    setData: (data) => {
-        set({data})
+    setData: (post) => {
+        set({data: post})
     },
     reset: () => {
         set({data:null, mode: "new"})
