@@ -3,16 +3,24 @@ import React, { useState } from "react";
 import styles from "./Tweet.module.css";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useModalStore } from "@/store/modal";
+import Link from "next/link";
 export default function TweetModal() {
   const [content, setContent] = useState("");
   const router = useRouter();
-  const me = {
-    id: "pgss0626",
-    image: "/5Udwvqim.jpg",
-  };
+  const {data:me} = useSession();
+  const modalStore = useModalStore();
+  if(!me?.user){
+    router.replace("/i/flow/login");
+  }
+
+
+
 
   const handleClose = () => {
     router.back();
+    modalStore.reset();
   };
 
   return (
@@ -31,10 +39,26 @@ export default function TweetModal() {
           </svg>
         </button>
         <form className={styles.modalForm}>
+          {modalStore.data && (
+            <div className={styles.modalOriginal}>
+              <div className={styles.postUserSection}>
+                <div className={styles.postUserImage}>
+                  <Image src={modalStore.data.User.image} alt={modalStore.data.User.id} width={40} height={40} />
+                </div>
+              </div>
+              <div>
+                {modalStore.data.content}
+                <div>
+                  <Link href={`/${modalStore.data.User.id}`} style={{color: "rgb(29, 155, 240)"}}>@{modalStore.data.User.id}</Link>
+                  님에게 보내는 답글
+                </div>
+              </div>
+            </div>
+          )}
           <div className={styles.modalBody}>
             <div className={styles.postUserSection}>
               <div className={styles.postUserImage}>
-                <Image alt="profile image" src={me.image} width={40} height={40} />
+                <Image alt="profile image" src={me?.user?.image || ''} width={40} height={40} />
               </div>
             </div>
             <div className={styles.inputDiv}>

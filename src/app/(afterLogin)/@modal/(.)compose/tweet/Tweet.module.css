@@ -13,7 +13,7 @@
 }
 
 .modal {
-  background: rgb(var(--background-end-rgb));
+  background: #fff;
   position: relative;
   width: 100%;
   border-radius: 16px;
@@ -55,7 +55,7 @@
 }
 
 .postUserImage,
-.modal_postUserImage__UPqZ_ img {
+.postUserImage img {
   width: 40px;
   height: 40px;
   border-radius: 20px;
@@ -128,6 +128,14 @@
 
 .uploadButton svg {
   fill: #1d9bf0;
+}
+
+.modalOriginal {
+  padding: 0 16px 20px;
+  margin-top: 54px;
+  margin-bottom : -54px;
+  display: flex;
+  flex-direction: row;
 }
 
 @media (min-width: 687px) {

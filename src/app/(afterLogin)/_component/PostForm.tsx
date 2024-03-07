@@ -26,14 +26,14 @@ export default function PostForm({ me }: Props) {
       const formData = new FormData();
       if (content.trim() === "") {
         alert("내용은 비워둘 수 없습니다.");
-        return null;
+        return ;
       }
       formData.append("content", content);
       imagePreview.forEach((image) => {
         image && formData.append("images", image.file);
       });
 
-      return await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`, {
+      return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/posts`, {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -99,7 +99,6 @@ export default function PostForm({ me }: Props) {
     });
   };
 
-  console.log("postform", me);
   return (
     <form className={styles.postForm} onSubmit={mutation.mutate}>
       <div className={styles.postUserSection}>
