@@ -169,3 +169,19 @@
 .postImageSection.fourImage a:last-child {
   border-bottom-right-radius: 16px;
 }
+
+
+.postReposted {
+  display: flex;
+  align-items: center;
+  color: #536471;
+  margin-left: 24px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.postReposted a {
+  display: inline-block;
+  color: rgb(29, 155, 240);
+  
+}
