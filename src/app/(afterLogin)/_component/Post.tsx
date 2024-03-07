@@ -30,7 +30,6 @@ export default function Post({ showImage = true, post }: Props) {
   }
 
 
-  console.log("target.Original", target?.Original)
   return (
     <PostArticle post={target}>
       {post?.Original && (
