@@ -1,0 +1,48 @@
+.formZone {
+  border-top: 1px solid #eff3f4;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  background-color: #eff3f4;
+  margin: 4px 12px;
+  border-radius: 16px;
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+}
+
+.form textarea {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  font-size: 15px;
+  line-height: 20px;
+  flex: 1 1;
+  outline: none;
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.submitButton {
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+}
+
+.submitButton svg {
+  fill: #1d9bf0;
+}

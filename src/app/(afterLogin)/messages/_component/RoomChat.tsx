@@ -5,26 +5,39 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
 import { useRouter } from "next/navigation";
+import { Room } from "@/model/Room";
+import { useSession } from "next-auth/react";
 
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
-export default function RoomChat() {
+type Props = {
+  room: Room;
+};
+
+export default function RoomChat({ room }: Props) {
   const router = useRouter();
+  const { data: me } = useSession();
 
   const onClickChatRoom = () => {
-    router.push(`/message/${"pgss0626 - pgss0626"}`);
+    if (!me?.user?.email) {
+      return null;
+    }
+    const roomArray = [room.Receiver.id, me.user.email];
+    roomArray.sort();
+    const roomString = roomArray.join("-");
+    router.push(`/messages/${roomString}`);
   };
   return (
     <div onClick={onClickChatRoom} className={styles.roomChatInfo}>
       <div className={styles.roomUserInfo}>
-        <b>mayrang</b>
+        <b>{room.Receiver.nickname}</b>
         &nbsp;
-        <span>@ pgss0626</span>
+        <span>@{room.Receiver.id}</span>
         &nbsp; · &nbsp;
-        <span> {dayjs(new Date()).fromNow(true)}</span>
+        <span> {dayjs(room.createdAt).fromNow(true)}</span>
       </div>
-      <div>3333</div>
+      <div>{room.content}</div>
     </div>
   );
 }
