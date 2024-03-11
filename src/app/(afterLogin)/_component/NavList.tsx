@@ -82,9 +82,9 @@ export default function NavList() {
       </li>
 
       <li>
-        <Link href="/message">
+        <Link href="/messages">
           <div className={styles.navPill}>
-            {path === "message" ? (
+            {path === "messages" ? (
               <>
                 <svg
                   width="26"

@@ -34,7 +34,7 @@
   width: 100%;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .userImage {
@@ -54,7 +54,6 @@
 
 .userName {
   margin: 0 12px;
-  flex: 1 1;
 }
 
 .userName > div:first-child {
@@ -77,4 +76,20 @@
   .main {
     width: 600px;
   }
+}
+
+
+.messageButton {
+  border: 1px solid #cfd9de;
+  width: 34px;
+  border-radius: 17px;
+  height: 34px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 8px;
+  margin-right: 12px;
 }
