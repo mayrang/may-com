@@ -12,6 +12,7 @@ export async function getRoomsServer(userId: string) {
       Cookie: cookies().toString(),
     },
   });
+  console.log("res", res)
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }

@@ -4,6 +4,10 @@ import styles from "./ChatForm.module.css";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import useSocket from "../_lib/useSocket";
 import { useSession } from "next-auth/react";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { Message } from "@/model/Message";
+import { produce } from "immer";
+import { useMessageStore } from "@/store/message";
 
 type Props = {
   receiverId: string;
@@ -13,14 +17,8 @@ export default function ChatForm({ receiverId }: Props) {
   const [content, setContent] = useState("");
   const [socket] = useSocket();
   const { data: session } = useSession();
-  useEffect(() => {
-    console.log(socket?.connected, "socket?");
-    socket?.on("receiveMessage", (data) => {});
-    return () => {
-      socket?.off("receiveMessage");
-    };
-  }, [socket]);
-
+  const queryClient = useQueryClient();
+  const setGodown = useMessageStore().setGodown
   const changeContent: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setContent(e.target.value);
   };
@@ -33,6 +31,31 @@ export default function ChatForm({ receiverId }: Props) {
       receiverId: receiverId,
       content,
     });
+    const queryData:InfiniteData<Message[]>|undefined = queryClient.getQueryData(["rooms", {senderId: session?.user?.email, receiverId}, "messages"]);
+    console.log('1234')
+    if(!queryData){
+      queryClient.invalidateQueries({queryKey : ["rooms", {senderId: session?.user?.email, receiverId}, "messages"]})
+      return;
+    }
+    const roomArray = [receiverId, session?.user?.email as string]
+    roomArray.sort();
+    const roomString = roomArray.join("-");
+    const data = {
+      messageId: queryData.pages.at(-1)?.at(-1)?.messageId ?queryData.pages.at(-1)?.at(-1)?.messageId as number+1: 1,
+      senderId: session?.user?.email as string,
+      receiverId: receiverId,
+      content,
+      createdAt: new Date(),
+      room: roomString
+    }
+   
+    const newValues = produce(queryData, draft => {
+      draft.pages[draft.pages.length - 1].push(data)
+    })
+    console.log("new values", newValues)
+    queryClient.setQueryData(["rooms", {senderId: session?.user?.email, receiverId}, "messages"], newValues)
+    setGodown(true);
+    setContent("");
   };
   return (
     <div className={styles.formZone}>

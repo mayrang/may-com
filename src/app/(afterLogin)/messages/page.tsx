@@ -20,14 +20,11 @@ export default async function MessagePage() {
       <div className={styles.header}>
         <h3>쪽지</h3>
       </div>
-      <div className={styles.room}>
-        <div className={styles.roomUserImage}>
-          <img src={faker.image.avatar()} alt="profile image" />
-        </div>
+     
         {rooms.map((room: Room) => (
           <RoomChat room={room} />
         ))}
-      </div>
+
     </main>
   );
 }

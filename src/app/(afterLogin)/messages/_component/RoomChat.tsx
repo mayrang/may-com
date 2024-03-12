@@ -18,7 +18,7 @@ type Props = {
 export default function RoomChat({ room }: Props) {
   const router = useRouter();
   const { data: me } = useSession();
-
+  const user = me?.user?.email === room.Receiver.id ? room.Receiver : room.Sender;
   const onClickChatRoom = () => {
     if (!me?.user?.email) {
       return null;
@@ -29,15 +29,20 @@ export default function RoomChat({ room }: Props) {
     router.push(`/messages/${roomString}`);
   };
   return (
-    <div onClick={onClickChatRoom} className={styles.roomChatInfo}>
+    <div onClick={onClickChatRoom} className={styles.room}>
+    <div className={styles.roomUserImage}>
+      <img src={user.image} alt="profile image" />
+    </div>
+    <div  className={styles.roomChatInfo}>
       <div className={styles.roomUserInfo}>
-        <b>{room.Receiver.nickname}</b>
+        <b>{user.nickname}</b>
         &nbsp;
-        <span>@{room.Receiver.id}</span>
+        <span>@{user.id}</span>
         &nbsp; · &nbsp;
         <span> {dayjs(room.createdAt).fromNow(true)}</span>
       </div>
       <div>{room.content}</div>
+    </div>
     </div>
   );
 }
